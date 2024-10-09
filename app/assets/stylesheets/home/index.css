@@ -1,0 +1,7 @@
+.store-btn {
+   width: 33vh;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ position: relative;
+}
