@@ -73,3 +73,7 @@ end
 
 gem 'jsbundling-rails'
 gem 'vite_rails'
+
+group :production do
+  gem 'pg'
+end
