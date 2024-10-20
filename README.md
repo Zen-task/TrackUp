@@ -23,8 +23,13 @@ Things you may want to cover:
 
 * ...
 
+# アプリケーション名
 
-## users table
+このアプリケーションは、ユーザーのタイマーセッションや行動記録をシンプルに管理します。
+
+## テーブル設計
+
+### users table
 ユーザー情報を管理するテーブルです。
 
 | Column             | Type    | Options                    |
@@ -35,15 +40,11 @@ Things you may want to cover:
 
 **Association**
 - has_many :sessions
-- has_many :achievements
-- has_many :activity_records
-- has_many :shortcuts
-- has_many :google_calendar_links
 
 ---
 
-## sessions table
-サイクルごとの学習や休憩のタイマーセッションを管理するテーブルです。
+### sessions table
+各サイクルごとの学習や休憩のタイマーセッションを管理するテーブルです。各セッションには一つのアクティビティが紐づきます。
 
 | Column      | Type      | Options                       |
 |-------------|-----------|-------------------------------|
@@ -55,11 +56,10 @@ Things you may want to cover:
 
 **Association**
 - belongs_to :user
-- has_many :activity_records
 
 ---
 
-## achievements table
+### achievements table
 ユーザーが特定の条件を満たしたときに得られる称号を管理するテーブルです。
 
 | Column       | Type      | Options                       |
@@ -74,23 +74,7 @@ Things you may want to cover:
 
 ---
 
-## activity_records table
-各セッションの詳細な行動記録を管理するテーブルです。
-
-| Column       | Type      | Options                       |
-|--------------|-----------|-------------------------------|
-| user         | references | null: false, foreign_key: true |
-| session      | references | null: false, foreign_key: true |
-| activity     | string     | null: false                   |
-| timestamp    | datetime   | null: false                   |
-
-**Association**
-- belongs_to :user
-- belongs_to :session
-
----
-
-## shortcuts table
+### shortcuts table
 ショートカット機能を管理するテーブルです。
 
 | Column      | Type      | Options                       |
@@ -105,7 +89,7 @@ Things you may want to cover:
 
 ---
 
-## google_calendar_links table
+### google_calendar_links table
 Googleカレンダーとの連携情報を管理するテーブルです。
 
 | Column              | Type      | Options                       |
@@ -117,13 +101,8 @@ Googleカレンダーとの連携情報を管理するテーブルです。
 **Association**
 - belongs_to :user
 
-
-
-
 ## テーブル間のリレーション概要
 - **Users と Sessions**: 1対多の関係
 - **Users と Achievements**: 1対多の関係
-- **Users と ActivityRecords**: 1対多の関係
 - **Users と Shortcuts**: 1対多の関係
 - **Users と GoogleCalendarLinks**: 1対多の関係
-- **Sessions と ActivityRecords**: 1対多の関係
