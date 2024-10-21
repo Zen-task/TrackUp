@@ -1,82 +1,106 @@
-# README
+# TrackUp
+
+## アプリケーション概要
 このアプリケーションは、ユーザーのタイマーセッションや行動記録をシンプルに管理します。
 
-## テーブル設計
 
-### users table
-ユーザー情報を管理するテーブルです。
+## URL
+https://trackup.onrender.com  
 
-| Column             | Type    | Options                    |
-|--------------------|---------|----------------------------|
-| email              | string  | null: false, unique: true   |
-| encrypted_password | string  | null: false                |
-| name               | string  | null: false                |
+### テスト用アカウト
+ID:Zen  
+パスワード:2000
+ 
+## 利用方法
+このアプリケーションは、学習タイマーと休憩タイマーをサイクルで使用するタイマーアプリです。
+学習時間と休憩時間をそれぞれ設定し、タイマーを開始できます。
 
-**Association**
-- has_many :sessions
+## 実装した機能についての画像やGIFおよびその説明
+ 
+タイマー使用動画リンク https://gyazo.com/7dc229b97f77e45cf453c7e79aaaa9cc
 
----
+## 実装予定の機能
+GoogleカレンダーAPIを使用して、学習や休憩の記録を自動で指定したカレンダーに残せる機能を実装予定です。記録は普段使用しているカレンダーとは別のカレンダーに保存することで、学習や作業の履歴を整理しやすくします。これにより、プライベートな予定と記録の区別ができ、効率的に管理できるようになります。
 
-### sessions table
-各サイクルごとの学習や休憩のタイマーセッションを管理するテーブルです。各セッションには一つのアクティビティが紐づきます。
+また、一日の記録回数に応じて称号を獲得できる仕組みを取り入れ、モチベーションを高める機能を追加する予定です。さらに、一週間や一ヶ月単位での総合記録を一覧表示できる機能を実装し、日々の進捗を振り返ることができるようにします。
 
-| Column      | Type      | Options                       |
-|-------------|-----------|-------------------------------|
-| user        | references | null: false, foreign_key: true |
-| start_time  | datetime   | null: false                   |
-| end_time    | datetime   | null: false                   |
-| activity    | string     | null: false                   |
-| duration    | integer    | null: false                   |
 
-**Association**
-- belongs_to :user
 
----
+## アプリケーションを作成した背景 
+タイマーを使用しても、毎回の記録を手動で取るのは非常に面倒でした。そのため、これまではMacroを使って記録の自動化を進めていましたが、機能に限界が見えてきたため、より柔軟なシステムを作ることを決意しました。
 
-### achievements table
-ユーザーが特定の条件を満たしたときに得られる称号を管理するテーブルです。
+今後は、タイマーの終了時に自動でダイアログが表示され、ユーザーが行動内容を選択し、それをGoogle Calendarに自動的に記録できる機能を実装する予定です。
 
-| Column       | Type      | Options                       |
-|--------------|-----------|-------------------------------|
-| user         | references | null: false, foreign_key: true |
-| title        | string     | null: false                   |
-| description  | text       | null: false                   |
-| achieved_at  | datetime   | null: false                   |
+## データベース設計
+ER図リンク https://gyazo.com/3e35161abdc28cb21d08836ea0b7e8e5
 
-**Association**
-- belongs_to :user
+## 画面遷移図
+遷移図リンク https://gyazo.com/2ff12bbd91fc1935f039029dc406b83e
 
----
 
-### shortcuts table
-ショートカット機能を管理するテーブルです。
+## 環境開発
+**フロントエンド**
+   - Vue.js
 
-| Column      | Type      | Options                       |
-|-------------|-----------|-------------------------------|
-| user        | references | null: false, foreign_key: true |
-| name        | string     | null: false                   |
-| condition   | string     |                               |
-| created_at  | datetime   | null: false                   |
+2. **バックエンド**
+   - Ruby on Rails, Node.js
 
-**Association**
-- belongs_to :user
+3. **インフラ**
+   -  Render
 
----
+4. **データベース**
+   - PostgreSQL, MySQL
 
-### google_calendar_links table
-Googleカレンダーとの連携情報を管理するテーブルです。
+5. **テスト**
+   - Rspec
 
-| Column              | Type      | Options                       |
-|---------------------|-----------|-------------------------------|
-| user                | references | null: false, foreign_key: true |
-| calendar_event_id   | string     | null: false                   |
-| synced_at           | datetime   | null: false                   |
+6. **IDE/エディタ**
+   - VS Code
 
-**Association**
-- belongs_to :user
+7. **タスク管理**
+   -  Notion
 
-## テーブル間のリレーション概要
-- **Users と Sessions**: 1対多の関係
-- **Users と Achievements**: 1対多の関係
-- **Users と Shortcuts**: 1対多の関係
-- **Users と GoogleCalendarLinks**: 1対多の関係
+## ローカルでの動作方法
+###  必要な環境
+
+以下のツールがローカルマシンにインストールされている必要があります。
+
+- **Git**：リポジトリのクローンを作成するために必要です。
+- **Node.js**：Vue.jsを導入しているため、Node.jsが必要です。
+- **npm**（Node Package Manager）：Node.jsと一緒にインストールされます。依存関係の管理に使用します。
+- **Ruby**（バージョンに注意）：Ruby on Railsを実行するため。
+- **Rails**：バックエンドフレームワークとして使用。
+
+以下のコマンドを順に実行
+% git clone https://github.com/Zen-task/TrackUp.git  
+
+% cd TrackUp 
+
+% bundle install 
+
+% rails db:create  
+
+% rails db:migrate 
+
+
+## 工夫したポイント
+現時点で実装している工夫として、タイマーの分数をユーザー自身で選択できる機能を追加しました。これにより、ユーザーが学習時間や休憩時間を柔軟に設定できるようになり、個々のニーズに応じた時間管理が可能です。
+
+また、今後の実装予定として、タイマーの記録を自動化する機能を考えています。これにより、手動での記録作業を減らし、さらなる作業効率化が図れる見込みです。時短の発想に基づき、学習や作業の進捗管理がよりスムーズに行えるようになることを目指しています。
+
+## 改善点
+タイマーの記録自動化
+
+現在は手動での記録が必要ですが、今後、タイマーの開始・終了に伴い自動的に記録される仕組みを実装する予定です。これにより、手作業の負担を減らし、ユーザー体験を向上させることが期待されます。
+データの可視化
+
+タイマーで記録された学習時間や休憩時間のデータをグラフや表で可視化することで、進捗の追跡や分析を容易にする予定です。ユーザーが自身の学習状況を直感的に把握できるようになります。
+レスポンシブ対応
+
+現在はデスクトップに最適化されていますが、スマートフォンやタブレットでも使いやすいように、レスポンシブデザインを導入し、モバイル対応を強化する必要があります。
+UI/UXの向上
+
+現状のUIは基本的なものに留まっているため、視覚的によりわかりやすく、使いやすいインターフェースに改善していきます。特に、ボタン配置や画面遷移の流れを見直し、ユーザビリティを向上させる予定です。
+
+## 制作時間
+30時間程度
