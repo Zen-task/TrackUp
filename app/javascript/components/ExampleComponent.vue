@@ -1,24 +1,11 @@
 <template>
-  <div class="timer-container">
-    <div class="timer-block">
-      <h1>学習タイマー</h1>
-      <div class="timer-display">
-        <span>{{ studyMinutes }}:{{ studySecondsFormatted }}</span>
-      </div>
-      <input type="number" v-model="studyDuration" placeholder="分を設定">
-      <button @click="startStudyTimer">スタート</button>
-      <button @click="resetStudyTimer">リセット</button>
+  <div>
+    <h1>{{ timerType }}タイマー</h1>
+    <div class="timer-display">
+      <span>{{ minutes }}:{{ secondsFormatted }}</span>
     </div>
-
-    <div class="timer-block">
-      <h1>休憩タイマー</h1>
-      <div class="timer-display">
-        <span>{{ breakMinutes }}:{{ breakSecondsFormatted }}</span>
-      </div>
-      <input type="number" v-model="breakDuration" placeholder="分を設定">
-      <button @click="startBreakTimer">スタート</button>
-      <button @click="resetBreakTimer">リセット</button>
-    </div>
+    <button @click="startTimer">スタート</button>
+    <button @click="resetTimer">リセット</button>
   </div>
 </template>
 
@@ -26,103 +13,66 @@
 export default {
   data() {
     return {
-      studyDuration: 25, 
-      breakDuration: 5, 
-      studyTimeRemaining: 25 * 60, 
-      breakTimeRemaining: 5 * 60, 
+      timeRemaining: 25 * 60, // 作業タイマーの初期設定（秒）
+      workDuration: 25 * 60,  // 25分
+      breakDuration: 5 * 60,  // 5分
       intervalId: null,
-      isStudy: true, 
+      timerType: '作業', // '作業'または'休憩'
     };
   },
   computed: {
-    studyMinutes() {
-      return Math.floor(this.studyTimeRemaining / 60);
+    minutes() {
+      return Math.floor(this.timeRemaining / 60);
     },
-    studySecondsFormatted() {
-      const seconds = this.studyTimeRemaining % 60;
-      return seconds < 10 ? "0" + seconds : seconds;
+    seconds() {
+      return this.timeRemaining % 60;
     },
-    breakMinutes() {
-      return Math.floor(this.breakTimeRemaining / 60);
-    },
-    breakSecondsFormatted() {
-      const seconds = this.breakTimeRemaining % 60;
-      return seconds < 10 ? "0" + seconds : seconds;
+    secondsFormatted() {
+      return this.seconds < 10 ? "0" + this.seconds : this.seconds;
     },
   },
   methods: {
-    startStudyTimer() {
-      this.isStudy = true;
-      if (this.intervalId) clearInterval(this.intervalId);
+    startTimer() {
+      if (this.intervalId) return; // 既にカウントダウンが進んでいる場合はスキップ
       this.intervalId = setInterval(() => {
-        if (this.studyTimeRemaining > 0) {
-          this.studyTimeRemaining--;
+        if (this.timeRemaining > 0) {
+          this.timeRemaining--;
         } else {
-          this.switchToBreak();
+          this.switchTimer(); // タイマー終了後にタイプを切り替える
         }
-      }, 1000);
+      }, 1000); // 1秒ごとにカウントダウン
     },
-    resetStudyTimer() {
+    resetTimer() {
       clearInterval(this.intervalId);
-      this.studyTimeRemaining = this.studyDuration * 60;
+      this.intervalId = null;
+      this.timeRemaining = this.timerType === '作業' ? this.workDuration : this.breakDuration; // 現在のタイマータイプに応じてリセット
     },
-    startBreakTimer() {
-      this.isStudy = false;
-      if (this.intervalId) clearInterval(this.intervalId);
-      this.intervalId = setInterval(() => {
-        if (this.breakTimeRemaining > 0) {
-          this.breakTimeRemaining--;
-        } else {
-          this.switchToStudy();
-        }
-      }, 1000);
-    },
-    resetBreakTimer() {
+    switchTimer() {
       clearInterval(this.intervalId);
-      this.breakTimeRemaining = this.breakDuration * 60;
-    },
-    switchToBreak() {
-      clearInterval(this.intervalId);
-      this.breakTimeRemaining = this.breakDuration * 60;
-      this.startBreakTimer();
-    },
-    switchToStudy() {
-      clearInterval(this.intervalId);
-      this.studyTimeRemaining = this.studyDuration * 60;
-      this.startStudyTimer();
+      this.intervalId = null;
+      if (this.timerType === '作業') {
+        this.timerType = '休憩';
+        this.timeRemaining = this.breakDuration;
+        alert("作業タイマーが終了しました！休憩を開始します。");
+      } else {
+        this.timerType = '作業';
+        this.timeRemaining = this.workDuration;
+        alert("休憩が終了しました！作業を再開します。");
+      }
+      this.startTimer(); // タイマーを再スタート
     },
   },
 };
 </script>
 
 <style scoped>
-.timer-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 20px;
-}
-
-.timer-block {
-  text-align: left;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
 .timer-display {
-  font-size: 2.5em;
-  margin: 15px 0;
+  font-size: 3em;
+  margin: 20px 0;
 }
-
 button {
-  padding: 10px;
-  margin: 5px;
+  padding: 10px 20px;
   font-size: 1.2em;
+  margin: 5px;
 }
 </style>

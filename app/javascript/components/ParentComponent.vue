@@ -26,28 +26,32 @@
 export default {
   data() {
     return {
-      studyDuration: 25, 
-      breakDuration: 5, 
-      studyTimeRemaining: 25 * 60, 
-      breakTimeRemaining: 5 * 60, 
+      studyDuration: 25, // ユーザーが設定する学習時間（分）
+      breakDuration: 5, // ユーザーが設定する休憩時間（分）
+      studyTimeRemaining: 25 * 60, // 学習タイマーの残り時間（秒）
+      breakTimeRemaining: 5 * 60, // 休憩タイマーの残り時間（秒）
       intervalId: null,
-      isStudy: true, 
+      isStudy: true, // 現在のタイマーが学習中かどうか
     };
   },
   computed: {
     studyMinutes() {
       return Math.floor(this.studyTimeRemaining / 60);
     },
+    studySeconds() {
+      return this.studyTimeRemaining % 60;
+    },
     studySecondsFormatted() {
-      const seconds = this.studyTimeRemaining % 60;
-      return seconds < 10 ? "0" + seconds : seconds;
+      return this.studySeconds < 10 ? "0" + this.studySeconds : this.studySeconds;
     },
     breakMinutes() {
       return Math.floor(this.breakTimeRemaining / 60);
     },
+    breakSeconds() {
+      return this.breakTimeRemaining % 60;
+    },
     breakSecondsFormatted() {
-      const seconds = this.breakTimeRemaining % 60;
-      return seconds < 10 ? "0" + seconds : seconds;
+      return this.breakSeconds < 10 ? "0" + this.breakSeconds : this.breakSeconds;
     },
   },
   methods: {
@@ -58,7 +62,7 @@ export default {
         if (this.studyTimeRemaining > 0) {
           this.studyTimeRemaining--;
         } else {
-          this.switchToBreak();
+          this.switchToBreak(); // 学習タイマー終了後、休憩タイマーを開始
         }
       }, 1000);
     },
@@ -73,7 +77,7 @@ export default {
         if (this.breakTimeRemaining > 0) {
           this.breakTimeRemaining--;
         } else {
-          this.switchToStudy();
+          this.switchToStudy(); // 休憩タイマー終了後、学習タイマーを開始
         }
       }, 1000);
     },
@@ -98,19 +102,19 @@ export default {
 <style scoped>
 .timer-container {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  position: absolute;
-  top: 0;
-  left: 0;
+  flex-direction: column;  /* タイマーを縦に並べる */
+  align-items: flex-start; /* 左寄せにする */
+  justify-content: flex-start; /* 上寄せにする */
+  position: absolute; /* 固定位置 */
+  top: 0; /* 上端に固定 */
+  left: 0; /* 左端に固定 */
   padding: 20px;
 }
 
 .timer-block {
   text-align: left;
   padding: 10px;
-  margin: 10px 0;
+  margin: 10px 0;  /* タイマー間のスペースを確保 */
   border: 1px solid #ccc;
   border-radius: 5px;
 }
@@ -126,3 +130,4 @@ button {
   font-size: 1.2em;
 }
 </style>
+
