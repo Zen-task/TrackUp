@@ -2,7 +2,7 @@
   <div class="timer-container">
     <div class="timer-block study-timer">
       <div class="timer-header">
-        <span>学習</span>
+        <span>記録する作業</span>
       </div>
       <div class="timer-display">
         <span>{{ studyMinutes }}:{{ studySecondsFormatted }}</span>
